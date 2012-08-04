@@ -9,7 +9,9 @@ curl -Lo- https://bit.ly/janus-bootstrap | bash
 #gem install `tr '\n' ' ' < gem_list`
 
 echo "Downloading and installing RVM"
-curl -L https://get.rvm.io | bash -s stable --rails
+curl -L https://get.rvm.io | bash -s stable
+rvm pkg install readline iconv curl openssl zlib autoconf ncurses pkgconfig gettext glib mono llvm libxml2 libxslt libyaml
+rvm install 1.9.2
 rvm use --default 1.9.2
 
 echo "Setting up python goodness"

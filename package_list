@@ -1,4 +1,6 @@
 git-core
+curl
+scons
 vim
 vim-gnome
 gnome-shell
