@@ -1,0 +1,15 @@
+git-core
+vim
+vim-gnome
+gnome-shell
+exuberant-ctags
+ack-grep
+readline-common
+libreadline6
+postgresql
+postgresql-server-dev-all
+libreadline6
+libreadline6-dev
+pandoc
+zsh
+tmux
