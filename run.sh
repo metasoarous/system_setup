@@ -2,9 +2,6 @@
 echo "Installing required packages using apt-get (you will be prompted for your password)"
 sudo apt-get install `tr '\n' ' ' < package_list`
 
-#echo "Installing gems"
-#gem install `tr '\n' ' ' < gem_list`
-
 echo "Downloading and installing RVM"
 curl -L https://get.rvm.io | bash -s stable
 source /home/cts/.rvm/scripts/rvm
@@ -21,7 +18,8 @@ if [[ ! -d $HOME/bin ]]; then
 fi
 cd $HOME/bin
 curl -O https://raw.github.com/pypa/virtualenv/master/virtualenv.py
-python virtualenv.py pyenv
+python virtualenv.py mainpy
+. mainpy/bin/activate
 
 echo "Installing csvkit and other goodies"
 pip install csvkit
@@ -35,13 +33,6 @@ install_biosuite () {
   pip install nestly
 }
 
-#echo "Do you want the bio suite?"
-#select yn in "yes" "no"; do
-  #case $yn in
-    #yes ) install_biosuite;;
-    #no ) exit;;
-  #esac
-#done
-
+echo "Installing biosuite"
 install_biosuite
 

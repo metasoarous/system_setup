@@ -27,3 +27,5 @@ All of the, ahem, BEST system configurations for these things above
 ## Ideas/TODO
 
 * Auto press 'q' when the message for rvm installation pops up
+* Have script ask before hand whether specific stuff should be installed (like biosuite)
+
