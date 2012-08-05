@@ -1,4 +1,29 @@
 
 # System Setup Utility
 
-This is a little program/script for setting up an Ubuntu machine with everything it needs to
+This is a little program/script for setting up an Ubuntu machine with everything it needs to run
+
+* Ruby
+* Ruby on rails
+* Python
+* csvkit
+* om my zsh
+* janus
+
+Optionally, you can also have it set up the following things for you.
+
+## Bio suite
+
+* BEAST (and related softwares)
+* tracer
+* figtree
+* aptx
+
+## dotfiles
+
+All of the, ahem, BEST system configurations for these things above
+
+
+## Ideas/TODO
+
+* Auto press 'q' when the message for rvm installation pops up

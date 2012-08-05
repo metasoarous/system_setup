@@ -16,7 +16,9 @@ echo "Setting up janus"
 curl -Lo- https://bit.ly/janus-bootstrap | bash
 
 echo "Setting up python goodness"
-if [[ ! -d $HOME/bin ]] { mkdir $HOME/bin }
+if [[ ! -d $HOME/bin ]]; then
+  mkdir $HOME/bin
+fi
 cd $HOME/bin
 curl -O https://raw.github.com/pypa/virtualenv/master/virtualenv.py
 python virtualenv.py pyenv
