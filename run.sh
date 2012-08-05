@@ -2,9 +2,6 @@
 echo "Installing required packages using apt-get (you will be prompted for your password)"
 sudo apt-get install `tr '\n' ' ' < package_list`
 
-echo "Setting up janus"
-curl -Lo- https://bit.ly/janus-bootstrap | bash
-
 #echo "Installing gems"
 #gem install `tr '\n' ' ' < gem_list`
 
@@ -13,6 +10,9 @@ curl -L https://get.rvm.io | bash -s stable
 rvm pkg install readline iconv curl openssl zlib autoconf ncurses pkgconfig gettext glib mono llvm libxml2 libxslt libyaml
 rvm install 1.9.2
 rvm use --default 1.9.2
+
+echo "Setting up janus"
+curl -Lo- https://bit.ly/janus-bootstrap | bash
 
 echo "Setting up python goodness"
 if [[ ! -d $HOME/bin ]] { mkdir $HOME/bin }
