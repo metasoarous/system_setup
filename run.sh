@@ -7,6 +7,7 @@ sudo apt-get install `tr '\n' ' ' < package_list`
 
 echo "Downloading and installing RVM"
 curl -L https://get.rvm.io | bash -s stable
+source /home/cts/.rvm/scripts/rvm
 rvm pkg install readline iconv curl openssl zlib autoconf ncurses pkgconfig gettext glib mono llvm libxml2 libxslt libyaml
 rvm install 1.9.2
 rvm use --default 1.9.2
