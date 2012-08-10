@@ -15,3 +15,6 @@ libreadline6-dev
 pandoc
 zsh
 tmux
+libwebkit-dev
+libqtwebkit-dev
+libqt4-dev

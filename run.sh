@@ -3,11 +3,13 @@ echo "Installing required packages using apt-get (you will be prompted for your 
 sudo apt-get install `tr '\n' ' ' < package_list`
 
 echo "Downloading and installing RVM"
-curl -L https://get.rvm.io | bash -s stable
-source /home/cts/.rvm/scripts/rvm
-rvm pkg install readline iconv curl openssl zlib autoconf ncurses pkgconfig gettext glib mono llvm libxml2 libxslt libyaml
-rvm install 1.9.2
-rvm use --default 1.9.2
+if [[ ! -d $HOME/.rvm ]]; then
+  curl -L https://get.rvm.io | bash -s stable
+  source /home/cts/.rvm/scripts/rvm
+  rvm pkg install readline iconv curl openssl zlib autoconf ncurses pkgconfig gettext glib mono llvm libxml2 libxslt libyaml
+  rvm install 1.9.2
+  rvm use --default 1.9.2
+fi
 
 echo "Setting up janus"
 curl -Lo- https://bit.ly/janus-bootstrap | bash
@@ -35,4 +37,10 @@ install_biosuite () {
 
 echo "Installing biosuite"
 install_biosuite
+
+echo "Installing chromedriver for Capybara"
+cd $HOME/src
+wget http://chromedriver.googlecode.com/files/chromedriver_linux64_21.0.1180.4.zip
+unzip chromedriver_linux64_21.0.1180.4.zip
+sudo mv chromedriver /usr/local/bin
 
