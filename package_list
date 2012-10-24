@@ -4,6 +4,7 @@ scons
 vim
 vim-gnome
 gnome-shell
+gnome-tweak-tool
 exuberant-ctags
 ack-grep
 readline-common
@@ -18,3 +19,4 @@ tmux
 libwebkit-dev
 libqtwebkit-dev
 libqt4-dev
+ghc6
