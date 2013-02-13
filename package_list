@@ -18,3 +18,5 @@ tmux
 libwebkit-dev
 libqtwebkit-dev
 libqt4-dev
+colordiff
+exuberant-ctags
