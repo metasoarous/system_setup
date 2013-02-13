@@ -4,6 +4,7 @@ scons
 vim
 vim-gnome
 gnome-shell
+gnome-tweak-tool
 exuberant-ctags
 ack-grep
 readline-common
@@ -20,3 +21,4 @@ libqtwebkit-dev
 libqt4-dev
 colordiff
 exuberant-ctags
+ghc6
