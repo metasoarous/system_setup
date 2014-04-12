@@ -27,6 +27,7 @@ The following stuff is set up:
 * Also, worth thinking about making sure precious is used on things.
 * Need a better way of keeping track of what needs to be built; touch seems to loose, date to strict
 * Should definitely make the pathogen files more flexible; shouldn't have to rerun everything unless needed; will have to test
+* spec files that people can use to decide what topics they want to install?
 
 ## Sketch:
 
@@ -43,6 +44,5 @@ The following stuff is set up:
 * other encaps?
 * lein profile -> lein deps
 * load dotfiles
-
 
 
