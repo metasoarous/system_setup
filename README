@@ -1,31 +1,48 @@
 
 # System Setup Utility
 
-This is a little program/script for setting up an Ubuntu machine with everything it needs to run
+This is a little program/script for system setup.
+It builds out quite a bit of stuff.
+My hope is to make it very flexible in what it builds out and what it doesn't, perhaps with Scons for dependencies and tracking of what has already been build (so it can be run to maintain sytems, not just set them up).
+I'm thinking of topical build sets, like `compbio` for beast and associated stuff, `programming` for all programming stuff, `database` for all database stuff, etc.
 
-* Ruby
-* Ruby on rails
+For now though, it's a bit more on the simple side.
+The following stuff is set up:
+
+* Ruby (via rvm)
 * Python
 * csvkit
+* bio stuff (beast, tracer, figtree, aptx)
 * om my zsh
-* janus
+* vim pathogen setup
+* dotfiles ?
+* leinengen
 
-Optionally, you can also have it set up the following things for you.
+## Questions
 
-## Bio suite
+* How are privileges going to be handled?
+* Should sudos be in scripts or in the python builder?
+* Might want to consider using custom cleaners for some things - http://www.scons.org/wiki/CustomCleanActions.
+* Should set up alias sets; in particular for things we're likely to want to keep in sync frequently.
+* Also, worth thinking about making sure precious is used on things.
+* Need a better way of keeping track of what needs to be built; touch seems to loose, date to strict
+* Should definitely make the pathogen files more flexible; shouldn't have to rerun everything unless needed; will have to test
 
-* BEAST (and related softwares)
-* tracer
-* figtree
-* aptx
+## Sketch:
 
-## dotfiles
+* set up system:
+    * first get ppas
+    * then check for packages that the system doens't actually know about (apt-cache showpkg ...)
+    * then install packages all in one go
+* set up rvm
+* install gems
+* install vim pathogen setup
+* python env:
+    * pip install list: csvkit bioscons nestly default virtual_env
+* load gnome-terminal-solarized
+* other encaps?
+* lein profile -> lein deps
+* load dotfiles
 
-All of the, ahem, BEST system configurations for these things above
 
-
-## Ideas/TODO
-
-* Auto press 'q' when the message for rvm installation pops up
-* Have script ask before hand whether specific stuff should be installed (like biosuite)
 

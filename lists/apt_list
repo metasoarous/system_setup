@@ -1,0 +1,282 @@
+# help
+# spotify-client - XXX put back in
+
+# careful
+# nvidia-cuda-dev
+# nvidia-cg-dev
+# nvidia-cg-toolkit
+# nvidia-cudo-gdb
+# nvidia-cuda-gdb
+# nvidia-cuda-toolkit
+# gcc-4.4
+# g++-4.4
+
+# I think this should still work, but you might want to
+netflix-desktop
+
+
+google-talkplugin
+
+# Science?
+mendeleydesktop
+
+# networking
+openssh-server
+sshfs
+libcurl4-openssl-dev
+iwlist
+mosh
+transmission
+wvdial
+smokeping
+rdesktop
+wavemon
+traceroute
+iwconfig
+libnet-ifconfig-wrapper-perl
+
+# system utils
+tmux
+xclip
+zsh
+readline-common
+libreadline6 # libs
+libreadline6-dev
+curl
+build-essential
+fdisk
+fstrim
+util-linux
+cryptkeeper
+sysfsutils
+usb-modeswitch
+setserial
+smartctl
+smartmontools
+i7z
+vagrant
+vim
+vim-gnome
+rake
+git-core
+ack-grep
+tree
+dos2unix
+exuberant-ctags
+gcc-avr
+source-highlight
+libcurl3
+scons
+colordiff
+fuse
+libfuse-dev
+fuse-utils
+autojump
+realpath
+
+
+# ????
+gdm
+wicd
+mtr
+w3m
+notify-send
+notify-osd
+notify-send
+notify-osd
+libgbm-dev
+gpsd
+
+
+# misc
+friends
+friends-app
+
+# UI - sys
+gnome-tweak-tool
+gnome-shell
+unity-tweak-tool
+unity-scope-github
+
+# more unknown
+sdlbasic
+sdl-config
+libsdl1.2-dev
+libsmpeg-dev
+libv4l-dev
+libv4l-0
+libv4lconvert0
+libsdl-ttf2.0-0
+libsdl-ttf2.0-0-dev
+libsdl-ttf2.0-dev
+
+# Typesetting
+pdflatex
+pandoc
+latex
+latex209-base
+texlive
+texlive-full
+latex-make
+pybtex
+jekyll
+ppa-purge
+kcachegrind
+
+
+# misc
+cowsay
+fortune
+
+# programming
+
+## processing/arduino
+libprocessing-core-java
+arduino
+arduino-core
+
+## python
+gmpc
+gmpc-dev
+libgmp10
+libgmp3-dev
+libgmp-dev
+libmpfr4
+libmpfr-dev
+libpython2.7
+python-gmpy
+python-dev
+python-bitstring
+python-numpy
+python-matplotlib
+python-scipy
+python-biopython
+ipython
+ipython-notebook
+python-matplotlib
+python-matplotlib-data
+python-setuptools
+python-pip
+
+## haskell
+ghc
+parsec47
+haskell-parsec
+haskell-cabal
+libghc-parsec3-dev
+
+## misc lang
+r-base
+sagemath-upstream-binary
+scala
+julia
+
+## node duh
+node
+#npm
+nodejs
+
+## scheme
+scheme9
+scheme48
+#scsh - XXX not working for some reason
+
+
+
+# databases
+redis-server
+mongodb
+sqlite3
+postgresql
+postgresql-client
+postgresql-server-dev-all
+pgadmin3
+postgresql-9.1
+libpg-dev
+
+
+# misc libs
+avr-libc
+wx2.8-headers
+wx-common
+libwxgtk2.8-0
+libwxgtk2.8-dev
+libsigc++-dev
+libsigc++0c2
+libsigc++-2.0-dev
+libsigc++-2.0-0c2a
+libwebkit
+libwebkit-dev
+libwebkit-dev
+libqtwebkit-dev
+qt5-default
+qt5-qmake
+libqt4-dev
+libqt5v8-5-dev
+libqt5webkit5
+libqt5webkit5-dev
+libjpeg-dev
+libjpeg
+libjpeg8
+libjpeg8-dev
+libjpeg-turbo8-dev
+zlib1g
+zlib1g-dev
+libtool
+libevent-dev
+
+# libs I know I need
+libxml2-dev
+libyaml-dev
+libsqlite3-dev
+libxslt1-dev
+ncurses-base
+ncurses-bin
+ncurses-term
+libncurses5
+libncursesw5
+libncursesw5-dev
+
+
+# clojure
+openjdk-7-jdk
+clojure1.4
+graphviz
+graphviz-dev
+# ?
+libswing-layout-java
+libfreehep-swing-java
+libswingworker-java
+libswingx-java
+
+# Bio
+beast-mcmc # install edge? This is 1.7; already 2.x
+figtree
+
+# audio/media
+mime-support
+gecko-mediaplayer
+ubuntu-restricted-extras
+gstreamer0.10-plugins-ffmpeg # i think?
+gstreamer0.10-plugins-ugly
+gstreamer0.10-plugins-base-apps
+alsa-firmware
+alsa-firmware-loaders
+alsa-tools
+alsa-tools-gui
+alsa-utils
+alsamixergui
+fxload
+alien
+mplayer
+lame
+vlc
+gecko-mediaplayer
+indicator-sound-switcher
+
+# graphics
+imagemagick
+inkscape
+gimp
+
+
