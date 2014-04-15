@@ -96,7 +96,7 @@ friends-app
 gnome-tweak-tool
 gnome-shell
 unity-tweak-tool
-unity-scope-github
+#unity-scope-github - should try to fix this eventually
 
 # more unknown
 sdlbasic

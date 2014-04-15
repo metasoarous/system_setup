@@ -9,7 +9,7 @@ from SCons.Environment import Environment
 from SCons.Script.Main import AddOption, GetOption
 
 
-ubuntu_version = sp.check_output(['sh', '-c', 'lsb_release -a | grep Description']).split()[-1]
+ubuntu_version = sp.check_output(['sh', '-c', 'lsb_release -a | grep Release']).split()[-1]
 ubuntu_codename = sp.check_output(['sh', '-c', 'lsb_release -a | grep Codename']).split()[-1]
 ubuntu_major, ubuntu_minor = map(int, ubuntu_version.split('.'))
 
@@ -19,7 +19,9 @@ AddOption("--strict", action="store_true",
 strict = GetOption("strict")
 
 
-env = Environment(ENV=os.environ)
+vars = Variables()
+vars.Add('HOME', default=os.environ['HOME'])
+env = Environment(variables=vars, ENV=os.environ)
 for p in ['/usr/local/bin', './bin']:
     env.PrependENVPath('PATH', p)
 
@@ -93,14 +95,17 @@ google_talk_rep = env.Command("/etc/apt/sources.list.d/google-talkplugin.list", 
     #"sudo echo 'deb http://dl.google.com/linux/talkplugin/deb/ stable main' >> $TARGET")
 
 # Add latest R repo
-r_edge_rep = env.Command("/etc/apt/sources.list", [],
-    "sudo sh -c 'echo \"deb http://cran.fhcrc.org/bin/linux/ubuntu %s/\" >> $TARGET'" % ubuntu_codename)
-#r_edge_rep = "/etc/apt/sources.list"
-env.Precious(r_edge_rep)
+if ubuntu_major >= 14:
+    r_edge_rep = env.Command("/etc/apt/sources.list", [],
+        "sudo sh -c 'echo \"deb http://cran.fhcrc.org/bin/linux/ubuntu %s/\" >> $TARGET'" % ubuntu_codename)
+    env.Precious(r_edge_rep)
+else:
+    r_edge_rep = []
 
 # Update aptitude based on added ppas and repositories
+# XXX - should really change to date
 apt_update = env.Command("touches/apt-update", [ppas, spotify_rep, google_talk_rep, r_edge_rep],
-    "sudo apt-get update > $TARGET")
+    "sudo apt-get update && touch $TARGET")
 
 # Starting a list of things we want to finish before doing apt install
 apt_depends = [apt_update]
@@ -108,7 +113,7 @@ apt_depends = [apt_update]
 # Depends on Ubuntu 14.04 or later; should set a switch for this
 if ubuntu_major > 13:
     apt_progress_bar = env.Command("/etc/apt/apt.conf.d/99progressbar", [],
-        "sudo echo 'Dpkg::Progress-Fancy \"1\";' > $TARGET")
+        "sudo sh -c 'echo \"Dpkg::Progress-Fancy '1';\" > $TARGET'")
     # add to depends list
     apt_depends.append(apt_progress_bar)
 
@@ -117,33 +122,49 @@ apts = env.Command("touches/apts", "lists/apt_list", apt_install)
 env.Depends(apts, apt_depends) # make sure this stuff runs after update
 
 # Install mendeley
-if not package_exists('mendeleydesktop'):
+if package_exists('mendeleydesktop'):
     mendeley = env.Command("touches/mendeley", [],
         "sudo dpkg -i http://www.mendeley.com/repositories/ubuntu/stable/amd64/mendeleydesktop-latest")
 else:
     mendeley = []
 
 # Install RVM if not present; set 2.1 as default; install some standard useful gems
-rvm = env.Command("touches/rvm", [], 'setup_rvm.sh && touch $TARGET')
+rvm = env.Command("touches/rvm", [], 'setup_rvm.sh && date > $TARGET')
 
 # Install pathogen and standard vim plugins
-pathogen = env.Command("$HOME/.vim/bundle", [apts], "./install_pathogen.sh")
+pathogen = env.Command("$HOME/.vim/bundle", [apts], "install_pathogen.sh")
 
 # Install default python packages
 python_pkgs = env.Command("touches/python_pkgs", ["lists/requirements.txt", apts],
-    "pip install -r $SOURCE && "
+    "sudo pip install -r $SOURCE && "
     "date > $TARGET")
 
 # Install R packages
-r_pkgs = env.Command("touches/r_pkgs", [apts], "install_packages.R && date > $TARGET")
+r_pkgs = env.Command("touches/r_pkgs", [apts], "sudo ./bin/install_packages.R && date > $TARGET")
 
 # dotfiles :-)
+# Have to use http unless you upload certs first; pain in ass
+# Have a step after getting crash plan back that switches the origin?
+# Add mkdir for ./bin/ in dotfiles; also default biuld
 dotfiles = env.Command("$HOME/.dotfiles", [rvm, apts],
-    "git clone git@github.com:metasoarous/dotfiles.git $TARGET && "
+    #"git clone git@github.com:metasoarous/dotfiles.git $TARGET && "
+    "git clone https://github.com/metasoarous/dotfiles $TARGET && "
     "cd $TARGET && "
     "rake backup && "
     "rake install")
+Alias("dotfiles", dotfiles)
+
+gnome_terminal_solarized = env.Command(
+    ["$HOME/src/gnome-terminal-colors-solarized", "touches/gnome_terminal_solarized"], [],
+    "rm -rf $TARGET && "
+    "git clone https://github.com/sigurdga/gnome-terminal-colors-solarized.git $TARGET && "
+    "cd $TARGET && "
+    "./install.sh && "
+    "date > ${TARGETS[1]}")
+# get to seldct dark by default
+Alias("solarize", [gnome_terminal_solarized])
 
 # lein profile - need to hook this in with the dotfiles, so this can dep onthat
 # encaps: epkg, copy, gnome-terminal-colors-solarized, processing-2.0.1, sequin, Tracer_v1.5, beast2
 
+# Definitely set up gnome-terminal-solarized
