@@ -10,6 +10,7 @@ from SCons.Script.Main import AddOption, GetOption
 
 
 ubuntu_version = sp.check_output(['sh', '-c', 'lsb_release -a | grep Description']).split()[-1]
+ubuntu_codename = sp.check_output(['sh', '-c', 'lsb_release -a | grep Codename']).split()[-1]
 ubuntu_major, ubuntu_minor = map(int, ubuntu_version.split('.'))
 
 
@@ -80,9 +81,9 @@ def apt_install(target, source, env):
 ppas = env.Command("touches/ppas", "lists/ppa_list", ppa_install)
 
 # Add spotify repository so we can manage with apt-get
-#spotify_rep = env.Command("/etc/apt/sources.list.d/spotify.list", [],
-    #"sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 94558F59 && "
-    #"sudo sh -c 'echo \"deb http://repository.spotify.com stable non-free\" > $TARGET'")
+spotify_rep = env.Command("/etc/apt/sources.list", [],
+    "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 94558F59 && "
+    "sudo sh -c 'echo \"deb http://repository.spotify.com stable non-free\" >> $TARGET'")
 
 # XXX - hmm... this is a little stubborn... needs to be removed if already exists
 # Add google talk repository so we can manage with apt-get
@@ -91,9 +92,14 @@ google_talk_rep = env.Command("/etc/apt/sources.list.d/google-talkplugin.list", 
     "sudo sh -c 'echo \"deb http://dl.google.com/linux/talkplugin/deb/ stable main\" > $TARGET'")
     #"sudo echo 'deb http://dl.google.com/linux/talkplugin/deb/ stable main' >> $TARGET")
 
+# Add latest R repo
+r_edge_rep = env.Command("/etc/apt/sources.list", [],
+    "sudo sh -c 'echo \"deb http://cran.fhcrc.org/bin/linux/ubuntu %s/\" >> $TARGET'" % ubuntu_codename)
+#r_edge_rep = "/etc/apt/sources.list"
+env.Precious(r_edge_rep)
+
 # Update aptitude based on added ppas and repositories
-#apt_update = env.Command("touches/apt-update", [ppas, spotify_rep, google_talk_rep],
-apt_update = env.Command("touches/apt-update", [ppas, google_talk_rep],
+apt_update = env.Command("touches/apt-update", [ppas, spotify_rep, google_talk_rep, r_edge_rep],
     "sudo apt-get update > $TARGET")
 
 # Starting a list of things we want to finish before doing apt install
@@ -139,5 +145,5 @@ dotfiles = env.Command("$HOME/.dotfiles", [rvm, apts],
     "rake install")
 
 # lein profile - need to hook this in with the dotfiles, so this can dep onthat
-# encaps: epkg, copy, gnome-terminal-colors-solarized, processing-2.0.1, sequin, Tracer_v1.5 
+# encaps: epkg, copy, gnome-terminal-colors-solarized, processing-2.0.1, sequin, Tracer_v1.5, beast2
 

@@ -3,15 +3,17 @@
 packages <- c(
   'ggplot2',
   'argparse',
+  'optparse',
   'plyr',
   'dplyr',
+  'reshape2',
   'ape',
   'devtools')
 
 install.packages(packages)
-library(devtools)
+suppressMessages(library(devtools))
 
-github.packages <- c('')
+github.packages <- c()
 for (p in github.packages) {
   install_github(p)
 }
