@@ -28,6 +28,8 @@ The following stuff is set up:
 * Need a better way of keeping track of what needs to be built; touch seems to loose, date to strict
 * Should definitely make the pathogen files more flexible; shouldn't have to rerun everything unless needed; will have to test
 * spec files that people can use to decide what topics they want to install?
+* Is it possible to automate figuring out which packages might conflict and dropping those out?
+* config settings for different machines? Like different lock behaviour for laptop vs desktop
 
 ## Sketch:
 
@@ -44,5 +46,17 @@ The following stuff is set up:
 * other encaps?
 * lein profile -> lein deps
 * load dotfiles
+* etc...
 
+## TODO
+
+* Get CrashPlan set up, maybe with automated data importing
+* automate beast downloads
+* capts -> control, as seen [here](http://www.emacswiki.org/emacs/MovingTheCtrlKey)
+* screen lock - http://askubuntu.com/questions/430384/turn-screen-off-when-inactive-setting-from-terminal
+  * gsettings set org.gnome.desktop.session idle-delay 0
+* sunset
+* move gnome-shell and ttf-mscorefonts to separate so configurations will pop up before long apt install
+* have dotfiles take an option for not requiring any user entry
+* maybe pass name and github stuff through command line
 
