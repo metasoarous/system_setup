@@ -1,5 +1,6 @@
 # help
-# spotify-client - XXX put back in
+# - XXX put back in
+spotify-client
 
 # careful
 # nvidia-cuda-dev
@@ -14,6 +15,7 @@
 # I think this should still work, but you might want to
 netflix-desktop
 
+chromium-desktop
 
 google-talkplugin
 

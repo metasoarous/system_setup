@@ -12,6 +12,7 @@ from SCons.Script.Main import AddOption, GetOption
 ubuntu_version = sp.check_output(['sh', '-c', 'lsb_release -a | grep Release']).split()[-1]
 ubuntu_codename = sp.check_output(['sh', '-c', 'lsb_release -a | grep Codename']).split()[-1]
 ubuntu_major, ubuntu_minor = map(int, ubuntu_version.split('.'))
+hostname = sp.check_output(['hostname']).split()[0]
 
 
 AddOption("--strict", action="store_true",
@@ -83,9 +84,11 @@ def apt_install(target, source, env):
 ppas = env.Command("touches/ppas", "lists/ppa_list", ppa_install)
 
 # Add spotify repository so we can manage with apt-get
-spotify_rep = env.Command("/etc/apt/sources.list", [],
+spotify_rep = env.Command(["/etc/apt/sources.list", "touches/spotify_rep"], [],
     "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 94558F59 && "
-    "sudo sh -c 'echo \"deb http://repository.spotify.com stable non-free\" >> $TARGET'")
+    "sudo sh -c 'echo \"deb http://repository.spotify.com stable non-free\" >> $TARGET' && "
+    "date > ${TARGETS[1]}")
+env.Precious(spotify_rep)
 
 # XXX - hmm... this is a little stubborn... needs to be removed if already exists
 # Add google talk repository so we can manage with apt-get
@@ -94,8 +97,9 @@ google_talk_rep = env.Command("/etc/apt/sources.list.d/google-talkplugin.list", 
     "sudo sh -c 'echo \"deb http://dl.google.com/linux/talkplugin/deb/ stable main\" > $TARGET'")
     #"sudo echo 'deb http://dl.google.com/linux/talkplugin/deb/ stable main' >> $TARGET")
 
-# Add latest R repo
-if ubuntu_major >= 14:
+# Add latest R repo, but only if version is less than 14, since 14 cran isn't up and has R recent enough for
+# hadleyverse
+if ubuntu_major < 14:
     r_edge_rep = env.Command("/etc/apt/sources.list", [],
         "sudo sh -c 'echo \"deb http://cran.fhcrc.org/bin/linux/ubuntu %s/\" >> $TARGET'" % ubuntu_codename)
     env.Precious(r_edge_rep)
@@ -133,6 +137,7 @@ rvm = env.Command("touches/rvm", [], 'setup_rvm.sh && date > $TARGET')
 
 # Install pathogen and standard vim plugins
 pathogen = env.Command("$HOME/.vim/bundle", [apts], "install_pathogen.sh")
+Alias("pathogen", pathogen)
 
 # Install default python packages
 python_pkgs = env.Command("touches/python_pkgs", ["lists/requirements.txt", apts],
@@ -154,17 +159,43 @@ dotfiles = env.Command("$HOME/.dotfiles", [rvm, apts],
     "rake install")
 Alias("dotfiles", dotfiles)
 
-gnome_terminal_solarized = env.Command(
-    ["$HOME/src/gnome-terminal-colors-solarized", "touches/gnome_terminal_solarized"], [],
+gnome_terminal_solarized = env.Command("$HOME/src/gnome-terminal-colors-solarized", [],
     "rm -rf $TARGET && "
     "git clone https://github.com/sigurdga/gnome-terminal-colors-solarized.git $TARGET && "
     "cd $TARGET && "
-    "./install.sh && "
-    "date > ${TARGETS[1]}")
+    "./install.sh")
 # get to seldct dark by default
 Alias("solarize", [gnome_terminal_solarized])
+
+# Install dropbox
+dropbox = env.Command("touches/dropbox", [],
+    "curl https://linux.dropbox.com/packages/ubuntu/dropbox_1.6.0_amd64.deb > dropbox.deb && "
+    "sudo dpkg -i dropbox.deb && "
+    "rm dropbox.deb && "
+    "echo 'Dropbox installed - youll want to run dropbox start -i from the terminal' && "
+    "date > $TARGET")
+Alias("dropbox", dropbox)
+
+# There is a problem on fullerine with brightness not always working; this seems to fix it, at least in 14.04
+if hostname == "fullerine":
+    brightness_fix = env.Command("/usr/share/X11/xorg.conf.d/20-intel.conf",
+        "files/brightness_fix.conf",
+        "sudo sh -c 'cat $SOURCE > $TARGET'")
+else:
+    brightness_fix = []
+Alias('brightness_fix', brightness_fix)
+
+# Create an "all" alias for building everything
+items = locals().values()
+all_tgts = [tgt for tgt in Flatten(items) if isinstance(tgt, SCons.Node.FS.Entry)]
+Alias('all', all_tgts)
+
 
 # lein profile - need to hook this in with the dotfiles, so this can dep onthat
 # encaps: epkg, copy, gnome-terminal-colors-solarized, processing-2.0.1, sequin, Tracer_v1.5, beast2
 
 # Definitely set up gnome-terminal-solarized
+# Do this stuff after installing crash plan - http://support.code43.com/CrashPlan/Latest/Troubleshooting/CrashPlan_Client_Closes_In_Some_Linux_Installations
+# file type program defaults - gvim/vim for text, etc
+# add vim and firefox spelling and merge all
+
