@@ -3,6 +3,7 @@ import re
 import os
 import functools as fn
 import subprocess as sp
+from os import path
 
 import SCons
 from SCons.Environment import Environment
@@ -12,17 +13,31 @@ from SCons.Script.Main import AddOption, GetOption
 ubuntu_version = sp.check_output(['sh', '-c', 'lsb_release -a | grep Release']).split()[-1]
 ubuntu_codename = sp.check_output(['sh', '-c', 'lsb_release -a | grep Codename']).split()[-1]
 ubuntu_major, ubuntu_minor = map(int, ubuntu_version.split('.'))
+
 hostname = sp.check_output(['hostname']).split()[0]
+db_public = "https://dl.dropboxusercontent.com/u/13117378/"
 
 
 AddOption("--strict", action="store_true",
     help="""Quit if a package doesn't doesn't install? By default we just raise warnings.""")
 strict = GetOption("strict")
 
+class SysSetupEnv(Environment):
+    def SudoCommand(self, target, source, action, **kw_args):
+        alias = kw_args.pop('alias', None)
+        def sudo_action(target, source, env):
+            print "Calling sudo with the following action:\n", action
+            sp.check_output(['sudo', 'sh', '-c', action])
+        tgt = super(SysSetupEnv, self).Command(target, source, sudo_action, **kw_args)
+        if alias:
+            Alias(alias, tgt)
+        return tgt
+
+
 
 vars = Variables()
 vars.Add('HOME', default=os.environ['HOME'])
-env = Environment(variables=vars, ENV=os.environ)
+env = SysSetupEnv(variables=vars, ENV=os.environ)
 for p in ['/usr/local/bin', './bin']:
     env.PrependENVPath('PATH', p)
 
@@ -159,6 +174,7 @@ dotfiles = env.Command("$HOME/.dotfiles", [rvm, apts],
     "rake install")
 Alias("dotfiles", dotfiles)
 
+# Radness
 gnome_terminal_solarized = env.Command("$HOME/src/gnome-terminal-colors-solarized", [],
     "rm -rf $TARGET && "
     "git clone https://github.com/sigurdga/gnome-terminal-colors-solarized.git $TARGET && "
@@ -184,6 +200,24 @@ if hostname == "fullerine":
 else:
     brightness_fix = []
 Alias('brightness_fix', brightness_fix)
+
+# make sure to have a clean for removing beast install
+beast_version = "2.1.2"
+beast_tar = "BEAST.v%s.tgz" % beast_version
+beast_download = db_public + beast_tar
+beast = env.SudoCommand(
+    [path.join("/usr/local", x) for x in
+        ["encap/BEAST-%s/" % beast_version] +
+            [path.join("bin", x) for x in
+                ["addonmanager", "beast", "beauti", "densitree", "logcombiner", "treeanotator"]]],
+    [],
+    ("cd /usr/local/encap && "
+        "wget {beast_download} && "
+        "tar -zxf {beast_tar} && "
+        "mv BEAST beast-{beast_version} && "
+        "epkg beast").format(beast_download=beast_download, beast_tar=beast_tar, beast_version=beast_version),
+    alias="beast")
+
 
 # Create an "all" alias for building everything
 items = locals().values()
