@@ -185,6 +185,28 @@ else:
     brightness_fix = []
 Alias('brightness_fix', brightness_fix)
 
+# Haven't tested if this works yet
+epkg_link = "ftp://ftp.encap.org/pub/encap/epkg/epkg-2.3.9.tar.gz"
+epkg = env.Command(["/usr/local/encap/epkg-2.3.9", "/usr/local/bin/epkg"], [apts],
+    #"sudo mkdir -p /usr/local/encap && "
+    #"sudo mkdir -p /usr/local/src && "
+    #"cd /usr/local/src && "
+    #"sudo sh -c 'sudo curl %s > src/epkg-2.3.9.tar.gz' && "
+    #"sudo sh -c 'zcat epkg-2.3.9.tar.gz | tar xvvpf -' && "
+    #"cd epkg-2.3.9 && "
+    #"sudo sh -c './configure --prefix=/usr/local/encap/epkg-2.3.9' && "
+    #"sudo sh -c 'make && make install'
+    "sudo sh -c 'mkdir -p /usr/local/encap && "
+    " mkdir -p /usr/local/src && "
+    " cd /usr/local/src && "
+    " curl %s > src/epkg-2.3.9.tar.gz && "
+    " zcat epkg-2.3.9.tar.gz | tar xvvpf - && "
+    " cd epkg-2.3.9 && "
+    " ./configure --prefix=$TARGET && "
+    " make && make install && cd $TARGET/.. && "
+    " epkg-2.3.9/bin/epkg epkg'" % epkg_link)
+
+
 # Create an "all" alias for building everything
 items = locals().values()
 all_tgts = [tgt for tgt in Flatten(items) if isinstance(tgt, SCons.Node.FS.Entry)]
