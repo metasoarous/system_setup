@@ -2,3 +2,4 @@ csvkit
 nestly
 biopython
 github3.py
+seqmagick
