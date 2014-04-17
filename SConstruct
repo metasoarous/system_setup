@@ -76,7 +76,7 @@ def ppa_install(target, source, env):
     f = safe_get_file(target, "w")
     for p in exist:
         print "You will have to hit enter here... for now"
-        sp.check_call(['sudo', 'apt-add-repository', 'ppa:%s' % p])
+        sp.check_call(['sudo', 'apt-add-repository', '-y', 'ppa:%s' % p])
         sp.check_call(['date'], stdout=f)
 
 def apt_install(target, source, env):
@@ -126,8 +126,17 @@ else:
 apt_update = env.Command("touches/apt-update", [ppas, spotify_rep, google_talk_rep, r_edge_rep],
     "sudo apt-get update && touch $TARGET")
 
+# These require interaction so we put them first and make other apt installs depend
+# there is some other package that depends on the true type fonts... maybe it was silverlight?
+inter_apts = env.SudoCommand("touches/inter_apts", apt_update, "apt-get install gnome-shell")
+# Install and activate silverlight plugin (make sure browser is off)
+silverlight = env.Command("touches/silverlight", apts,
+    "sudo apt-get --install-recommends pipelight-multi && "
+    "sudo pipelight-plugin --enable silverlight && "
+    "date > $TARGET")
 # Starting a list of things we want to finish before doing apt install
-apt_depends = [apt_update]
+apt_depends = [apt_update, inter_apts, silverlight]
+
 
 # Depends on Ubuntu 14.04 or later; should set a switch for this
 if ubuntu_major > 13:
@@ -139,6 +148,11 @@ if ubuntu_major > 13:
 # Install all repositories
 apts = env.Command("touches/apts", "lists/apt_list", apt_install)
 env.Depends(apts, apt_depends) # make sure this stuff runs after update
+
+# Active pepper flash for chromium
+pepper_flash = env.Command("touches/pepperflash", apts,
+    "sudo update-pepperflash-nonfree --install && "
+    "date > $TARGET")
 
 # Install mendeley
 if package_exists('mendeleydesktop'):
@@ -204,24 +218,16 @@ Alias('brightness_fix', brightness_fix)
 
 # Haven't tested if this works yet
 epkg_link = "ftp://ftp.encap.org/pub/encap/epkg/epkg-2.3.9.tar.gz"
-epkg = env.Command(["/usr/local/encap/epkg-2.3.9", "/usr/local/bin/epkg"], [apts],
-    #"sudo mkdir -p /usr/local/encap && "
-    #"sudo mkdir -p /usr/local/src && "
-    #"cd /usr/local/src && "
-    #"sudo sh -c 'sudo curl %s > src/epkg-2.3.9.tar.gz' && "
-    #"sudo sh -c 'zcat epkg-2.3.9.tar.gz | tar xvvpf -' && "
-    #"cd epkg-2.3.9 && "
-    #"sudo sh -c './configure --prefix=/usr/local/encap/epkg-2.3.9' && "
-    #"sudo sh -c 'make && make install'
-    "sudo sh -c 'mkdir -p /usr/local/encap && "
-    " mkdir -p /usr/local/src && "
-    " cd /usr/local/src && "
-    " curl %s > src/epkg-2.3.9.tar.gz && "
-    " zcat epkg-2.3.9.tar.gz | tar xvvpf - && "
-    " cd epkg-2.3.9 && "
-    " ./configure --prefix=$TARGET && "
-    " make && make install && cd $TARGET/.. && "
-    " epkg-2.3.9/bin/epkg epkg'" % epkg_link)
+epkg = env.SudoCommand(["/usr/local/encap/epkg-2.3.9", "/usr/local/bin/epkg"], [apts],
+    "mkdir -p /usr/local/encap && "
+    "mkdir -p /usr/local/src && "
+    "cd /usr/local/src && "
+    "curl %s > src/epkg-2.3.9.tar.gz && "
+    "zcat epkg-2.3.9.tar.gz | tar xvvpf - && "
+    "cd epkg-2.3.9 && "
+    "./configure --prefix=$TARGET && "
+    "make && make install && cd $TARGET/.. && "
+    "epkg-2.3.9/bin/epkg epkg" % epkg_link)
 
 
 # make sure to have a clean for removing beast install
