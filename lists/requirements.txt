@@ -1,5 +1,7 @@
-csvkit
+-e git://github.com/metasoarous/csvkit.git#egg=csvkit
+openpyxl==1.5.7
 nestly
 biopython
 github3.py
 seqmagick
+-e git://github.com/nhoffman/alnvu.git#egg=alnvu

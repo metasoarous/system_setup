@@ -158,6 +158,7 @@ Alias("pathogen", pathogen)
 python_pkgs = env.Command("touches/python_pkgs", ["lists/requirements.txt", apts],
     "sudo pip install -r $SOURCE && "
     "date > $TARGET")
+Alias("python", python_pkgs)
 
 # Install R packages
 r_pkgs = env.Command("touches/r_pkgs", [apts], "sudo ./bin/install_packages.R && date > $TARGET")
@@ -240,6 +241,12 @@ beast = env.SudoCommand(
         "mv BEAST beast-{beast_version} && "
         "epkg beast").format(beast_download=beast_download, beast_tar=beast_tar, beast_version=beast_version),
     alias="beast")
+
+hub = env.Command("/usr/local/bin/hub", [rvm],
+    "mkdir -p $HOME/src && cd $HOME/src/ && "
+    "git clone git://github.com/github/hub.git && cd hub && "
+    "sudo rake install")
+Alias('hub', hub)
 
 
 # Create an "all" alias for building everything
