@@ -254,6 +254,14 @@ hub = env.Command("/usr/local/bin/hub", [rvm],
     "sudo rake install")
 Alias('hub', hub)
 
+# Times in seconds - screensaver/lock; don't know if this works yet - XXX
+screen_lock = env.Command("touches/screen_lock", [],
+    "gsettings set org.gnome.desktop.session idle-delay 0 && "
+    "gesttings set org.gnome.settings-daemon.plugins.power sleep-display-ac 1800 && "
+    "gesttings set org.gnome.settings-daemon.plugins.power sleep-display-battery 500 && "
+    "date > $TARGET")
+
+
 
 # Create an "all" alias for building everything
 items = locals().values()
