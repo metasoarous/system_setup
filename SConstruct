@@ -179,13 +179,13 @@ r_pkgs = env.Command("touches/r_pkgs", [apts], "sudo ./bin/install_packages.R &&
 
 # dotfiles :-)
 # Have to use http unless you upload certs first; pain in ass
-# Have a step after getting crash plan back that switches the origin?
-# Add mkdir for ./bin/ in dotfiles; also default biuld
+# Add mkdir for ./bin/ in dotfiles; also default build
 dotfiles = env.Command("$HOME/.dotfiles", [rvm, apts],
     #"git clone git@github.com:metasoarous/dotfiles.git $TARGET && "
     "git clone https://github.com/metasoarous/dotfiles $TARGET && "
     "cd $TARGET && "
     "rake backup && "
+    "mkdir -p $HOME/bin && "
     "rake install")
 Alias("dotfiles", dotfiles)
 
