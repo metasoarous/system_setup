@@ -59,4 +59,10 @@ The following stuff is set up:
 * move gnome-shell and ttf-mscorefonts to separate so configurations will pop up before long apt install
 * have dotfiles take an option for not requiring any user entry
 * maybe pass name and github stuff through command line
+* Things to pull over from backups:
+   * .zshhistory, .ssh
+   * firefox tabs
+   * autojump learning
+* wifi-passwords :(
+* grease monkey
 
