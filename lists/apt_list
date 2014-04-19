@@ -13,7 +13,7 @@ spotify-client
 # g++-4.4
 
 # I think this should still work, but you might want to
-netflix-desktop
+#netflix-desktop # should now be replaced with pipelight-multi
 
 chromium-browser
 
@@ -96,7 +96,6 @@ friends-app
 
 # UI - sys
 gnome-tweak-tool
-gnome-shell
 unity-tweak-tool
 #unity-scope-github - should try to fix this eventually
 
@@ -256,6 +255,7 @@ beast-mcmc # install edge? This is 1.7; already 2.x
 figtree
 
 # audio/media
+gstreamer0.10-ffmpeg
 mime-support
 gecko-mediaplayer
 ubuntu-restricted-extras
@@ -275,6 +275,7 @@ lame
 vlc
 gecko-mediaplayer
 indicator-sound-switcher
+pepperflashplugin-nonfree
 
 # graphics
 imagemagick
