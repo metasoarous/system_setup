@@ -37,10 +37,14 @@ So far, the folling has been set up or is planned:
 
 ## Backup things
 
-* grease monkey
-* wifi-passwords :(
+make sure to ignore ~/.local/share/Trash
 * .zshhistory, .ssh
-* firefox tabs
 * autojump learning
+  /home/csmall/.local/share/autojump
+* grease monkey
+  /home/csmall/.mozilla/firefox/ymqa6h42.default/gm_scripts
+* firefox tabs -
+  /home/csmall/.mozilla/firefox/ymqa6h42.default/sessions
+  /home/csmall/.mozilla/sessionstore.js
 
 
