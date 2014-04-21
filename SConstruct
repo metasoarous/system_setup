@@ -130,8 +130,9 @@ apt_update = env.Command("touches/apt-update", [ppas, spotify_rep, google_talk_r
 # there is some other package that depends on the true type fonts... maybe it was silverlight?
 inter_apts = env.SudoCommand("touches/inter_apts", apt_update, "apt-get install gnome-shell")
 # Install and activate silverlight plugin (make sure browser is off)
-silverlight = env.Command("touches/silverlight", apts,
-    "sudo apt-get --install-recommends pipelight-multi && "
+silverlight = env.Command("touches/silverlight", [],
+    "killall firefox && killall chromium-desktop && "
+    "sudo apt-get install --install-recommends pipelight-multi && "
     "sudo pipelight-plugin --enable silverlight && "
     "date > $TARGET")
 # Starting a list of things we want to finish before doing apt install
@@ -148,6 +149,7 @@ if ubuntu_major > 13:
 # Install all repositories
 apts = env.Command("touches/apts", "lists/apt_list", apt_install)
 env.Depends(apts, apt_depends) # make sure this stuff runs after update
+env.Alias("apts", apts)
 
 # Active pepper flash for chromium
 pepper_flash = env.Command("touches/pepperflash", apts,
@@ -261,11 +263,13 @@ screen_lock = env.Command("touches/screen_lock", [],
     "gesttings set org.gnome.settings-daemon.plugins.power sleep-display-battery 500 && "
     "date > $TARGET")
 
-# Copy cloud storage service
-copyss = env.SudoCommand("touches/copyss", [apts],
+# Copy cloud storage service - this last ln still doesn't work for some reason...
+copyss = env.SudoCommand(
+    [path.join("/usr/local/bin", x) for x in ("CopyCmd", "CopyAgent", "CopyConsole")] + ["/usr/local/encap/copy"],
+    [],
     "cd /usr/local/encap && "
-    "curl http://copy.com/install/linux/Copy.tgz | tar -zxf - && "
-    "ln -s ../encap/copy/x86_64/Copy* ../bin/")
+    "curl http://copy.com/install/linux/Copy.tgz | sudo tar -zxf - && "
+    "sudo ln -s ../encap/copy/x86_64/Copy* -t ../bin")
 env.Alias("copy", copyss)
 
 
