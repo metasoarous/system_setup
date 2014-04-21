@@ -261,6 +261,12 @@ screen_lock = env.Command("touches/screen_lock", [],
     "gesttings set org.gnome.settings-daemon.plugins.power sleep-display-battery 500 && "
     "date > $TARGET")
 
+# Copy cloud storage service
+copyss = env.SudoCommand("touches/copyss", [apts],
+    "cd /usr/local/encap && "
+    "curl http://copy.com/install/linux/Copy.tgz | tar -zxf - && "
+    "ln -s ../encap/copy/x86_64/Copy* ../bin/")
+env.Alias("copy", copyss)
 
 
 # Create an "all" alias for building everything
