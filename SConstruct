@@ -269,6 +269,13 @@ Alias('hub', hub)
     #screen_lock = []
 #Alias('screen_lock', screen_lock)
 
+# Fuck caps lock... The first time you run this, may require Console menu and restart
+caps = env.Command("/etc/default/keyboard", [],
+    "sudo sed -i 's/XKBOPTIONS*/XKBOPTIONS=\"lv3:ralt_alt,compose:menu,ctrl:nocaps\"/' $TARGET && "
+    "sudo dpkg-reconfigure keyboard-configuration --unseen-only --terse")
+env.Precious(caps)
+Alias("caps", caps)
+
 
 
 # Create an "all" alias for building everything
