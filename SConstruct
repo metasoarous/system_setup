@@ -189,11 +189,15 @@ Alias("dotfiles", dotfiles)
 r_pkgs = env.Command("touches/r_pkgs", [apts, dotfiles], "sudo ./bin/install_packages.R && date > $TARGET")
 
 # Radness
-gnome_terminal_solarized = env.Command("$HOME/src/gnome-terminal-colors-solarized", [],
+gnome_terminal_solarized = env.Command(["$HOME/encap/gnome-terminal-colors-solarized"] +
+        [path.join("$HOME/bin/", x) for x in ("set_light.sh", "set_dark.sh", "solarize")],
+    [],
     "rm -rf $TARGET && "
     "git clone https://github.com/sigurdga/gnome-terminal-colors-solarized.git $TARGET && "
     "cd $TARGET && "
-    "./install.sh")
+    "./install.sh && "
+    "ln -s ../encap/gnome_terminal_solarized/set_* -t ../bin && "
+    "ln -s ../encap/gnome_terminal_solarized/solarize ../bin")
 # get to seldct dark by default
 Alias("solarize", [gnome_terminal_solarized])
 
