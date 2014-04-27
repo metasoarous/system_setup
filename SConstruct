@@ -130,6 +130,7 @@ apt_update = env.Command("touches/apt-update", [ppas, spotify_rep, google_talk_r
 inter_apts = env.SudoCommand("touches/inter_apts", apt_update, "apt-get install gnome-shell")
 # Install and activate silverlight plugin (make sure browser is off)
 silverlight = env.Command("touches/silverlight", apt_update,
+    "killall firefox && killall chromium-desktop && "
     "sudo apt-get install -y --install-recommends pipelight-multi && "
     "sudo pipelight-plugin --enable silverlight && "
     "date > $TARGET")
@@ -147,6 +148,7 @@ if ubuntu_major > 13:
 # Install all repositories
 apts = env.Command("touches/apts", "lists/apt_list", apt_install)
 env.Depends(apts, apt_depends) # make sure this stuff runs after update
+env.Alias("apts", apts)
 
 # Active pepper flash for chromium
 pepper_flash = env.Command("touches/pepperflash", apts,
@@ -276,6 +278,14 @@ caps = env.Command("/etc/default/keyboard", [],
 env.Precious(caps)
 Alias("caps", caps)
 
+# Copy cloud storage service - this last ln still doesn't work for some reason...
+copyss = env.SudoCommand(
+    [path.join("/usr/local/bin", x) for x in ("CopyCmd", "CopyAgent", "CopyConsole")] + ["/usr/local/encap/copy"],
+    [],
+    "cd /usr/local/encap && "
+    "curl http://copy.com/install/linux/Copy.tgz | sudo tar -zxf - && "
+    "sudo ln -s ../encap/copy/x86_64/Copy* -t ../bin")
+env.Alias("copy", copyss)
 
 
 # Create an "all" alias for building everything
