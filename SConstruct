@@ -257,12 +257,17 @@ hub = env.Command("/usr/local/bin/hub", [rvm],
     "sudo rake install")
 Alias('hub', hub)
 
-# Times in seconds - screensaver/lock; don't know if this works yet - XXX
-screen_lock = env.Command("touches/screen_lock", [],
-    "gsettings set org.gnome.desktop.session idle-delay 0 && "
-    "gesttings set org.gnome.settings-daemon.plugins.power sleep-display-ac 1800 && "
-    "gesttings set org.gnome.settings-daemon.plugins.power sleep-display-battery 500 && "
-    "date > $TARGET")
+## Times in seconds - screensaver/lock; don't know if this works yet - XXX
+## This may only work for 14.04 as written... sleep-display-ac, sleep-display-battery for lower?
+#if ubuntu_major >= 14:
+    #screen_lock = env.Command("touches/screen_lock", [],
+        #"gsettings set org.gnome.desktop.session idle-delay 0 && "
+        #"gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 1802 && "
+        #"gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 500 && "
+        #"date > $TARGET")
+#else:
+    #screen_lock = []
+#Alias('screen_lock', screen_lock)
 
 
 
