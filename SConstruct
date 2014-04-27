@@ -75,7 +75,6 @@ def ppa_install(target, source, env):
     exist, missing = get_list(source)
     f = safe_get_file(target, "w")
     for p in exist:
-        print "You will have to hit enter here... for now"
         sp.check_call(['sudo', 'apt-add-repository', '-y', 'ppa:%s' % p])
         sp.check_call(['date'], stdout=f)
 
@@ -130,8 +129,8 @@ apt_update = env.Command("touches/apt-update", [ppas, spotify_rep, google_talk_r
 # there is some other package that depends on the true type fonts... maybe it was silverlight?
 inter_apts = env.SudoCommand("touches/inter_apts", apt_update, "apt-get install gnome-shell")
 # Install and activate silverlight plugin (make sure browser is off)
-silverlight = env.Command("touches/silverlight", apts,
-    "sudo apt-get --install-recommends pipelight-multi && "
+silverlight = env.Command("touches/silverlight", apt_update,
+    "sudo apt-get install -y --install-recommends pipelight-multi && "
     "sudo pipelight-plugin --enable silverlight && "
     "date > $TARGET")
 # Starting a list of things we want to finish before doing apt install
@@ -151,7 +150,7 @@ env.Depends(apts, apt_depends) # make sure this stuff runs after update
 
 # Active pepper flash for chromium
 pepper_flash = env.Command("touches/pepperflash", apts,
-    "sudo update-pepperflash-nonfree --install && "
+    "sudo update-pepperflashplugin-nonfree --install && "
     "date > $TARGET")
 
 # Install mendeley
@@ -174,9 +173,6 @@ python_pkgs = env.Command("touches/python_pkgs", ["lists/requirements.txt", apts
     "date > $TARGET")
 Alias("python", python_pkgs)
 
-# Install R packages
-r_pkgs = env.Command("touches/r_pkgs", [apts], "sudo ./bin/install_packages.R && date > $TARGET")
-
 # dotfiles :-)
 # Have to use http unless you upload certs first; pain in ass
 # Add mkdir for ./bin/ in dotfiles; also default build
@@ -188,6 +184,9 @@ dotfiles = env.Command("$HOME/.dotfiles", [rvm, apts],
     "mkdir -p $HOME/bin && "
     "rake install")
 Alias("dotfiles", dotfiles)
+
+# Install R packages - need dotfiles first for correct cran
+r_pkgs = env.Command("touches/r_pkgs", [apts, dotfiles], "sudo ./bin/install_packages.R && date > $TARGET")
 
 # Radness
 gnome_terminal_solarized = env.Command("$HOME/src/gnome-terminal-colors-solarized", [],
@@ -277,3 +276,4 @@ Alias('all', all_tgts)
 # file type program defaults - gvim/vim for text, etc
 # add vim and firefox spelling and merge all
 
+# Download crashplan - http://download.code42.com/installs/linux/install/CrashPlan/CrashPlan_3.6.3_Linux.tgz
