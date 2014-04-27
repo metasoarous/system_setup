@@ -6,10 +6,11 @@ cd $encap
 
 git clone https://github.com/sigurdga/gnome-terminal-colors-solarized.git
 cd gnome-terminal-colors-solarized
+echo "XXXX - Make sure to enter 'yes' after selecting profile; there seems to be an scons bug here"
 ./install.sh
 
 cd $encap
-ln -s ../encap/gnome_terminal_solarized/set_dark.sh -t ../bin
-ln -s ../encap/gnome_terminal_solarized/set_light.sh -t ../bin
-ln -s ../encap/gnome_terminal_solarized/solarize -t ../bin
+ln -s ../encap/gnome-terminal-colors-solarized/set_dark.sh ../bin
+ln -s ../encap/gnome-terminal-colors-solarized/set_light.sh ../bin
+ln -s ../encap/gnome-terminal-colors-solarized/solarize ../bin
 
