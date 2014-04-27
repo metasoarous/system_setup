@@ -46,5 +46,5 @@ make sure to ignore ~/.local/share/Trash
 * firefox tabs -
   /home/csmall/.mozilla/firefox/ymqa6h42.default/sessions
   /home/csmall/.mozilla/sessionstore.js
-
+* ..encrypted, .cheat?, .lein, .processing, .irg_history, .clojure_history, .julia_history, .Rhistory, 
 
