@@ -6,7 +6,7 @@ chris-lea/node.js
 pipelight/stable
 
 # Enable firefox to listen to ffmpeg video
-pc3man/trusty-media
+mc3man/trusty-media
 
 # Some sort of more native feeling google music interface
 #janousek.jiri/google-music-frame-releases
