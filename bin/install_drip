@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+# maybe use a scrath dir across builds like this?
+mkdir -p scratch
+git clone https://github.com/flatland/drip.git scratch/drip
+cd scratch/drip && make prefix=/usr/local/bin install
+

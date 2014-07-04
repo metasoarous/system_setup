@@ -20,7 +20,12 @@ db_public = "https://dl.dropboxusercontent.com/u/13117378/"
 
 AddOption("--strict", action="store_true",
     help="""Quit if a package doesn't doesn't install? By default we just raise warnings.""")
+AddOption("--ignore-apts", action="store_true",
+    help="""Don't require apt packages for otherwise downstream things to install""")
+
 strict = GetOption("strict")
+ignore_apts = GetOption("ignore_apts")
+
 
 class SysSetupEnv(Environment):
     def SudoCommand(self, target, source, action, **kw_args):
@@ -147,6 +152,8 @@ if ubuntu_major > 13:
 
 # Install all repositories
 apts = env.Command("touches/apts", "lists/apt_list", apt_install)
+if ignore_apts:
+    apts = []
 env.Depends(apts, apt_depends) # make sure this stuff runs after update
 env.Alias("apts", apts)
 
@@ -157,10 +164,11 @@ pepper_flash = env.Command("touches/pepperflash", apts,
 
 # Install mendeley
 if package_exists('mendeleydesktop'):
+    mendeley = []
+else:
     mendeley = env.Command("touches/mendeley", [],
         "sudo dpkg -i http://www.mendeley.com/repositories/ubuntu/stable/amd64/mendeleydesktop-latest")
-else:
-    mendeley = []
+Alias('mendeley', mendeley)
 
 # Install RVM if not present; set 2.1 as default; install some standard useful gems
 rvm = env.Command("touches/rvm", [], 'setup_rvm.sh && date > $TARGET')
@@ -219,15 +227,8 @@ Alias('brightness_fix', brightness_fix)
 # Haven't tested if this works yet
 epkg_link = "ftp://ftp.encap.org/pub/encap/epkg/epkg-2.3.9.tar.gz"
 epkg = env.SudoCommand(["/usr/local/encap/epkg-2.3.9", "/usr/local/bin/epkg"], [apts],
-    "mkdir -p /usr/local/encap && "
-    "mkdir -p /usr/local/src && "
-    "cd /usr/local/src && "
-    "curl %s > src/epkg-2.3.9.tar.gz && "
-    "zcat epkg-2.3.9.tar.gz | tar xvvpf - && "
-    "cd epkg-2.3.9 && "
-    "./configure --prefix=$TARGET && "
-    "make && make install && cd $TARGET/.. && "
-    "epkg-2.3.9/bin/epkg epkg" % epkg_link)
+    "install_epkg.sh")
+env.Alias('epkg', epkg)
 
 
 # make sure to have a clean for removing beast install

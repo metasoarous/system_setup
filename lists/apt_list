@@ -285,3 +285,5 @@ gimp
 
 #misc stuff
 audacious
+cabal-install
+postgresql-contrib
