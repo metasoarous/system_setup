@@ -28,15 +28,31 @@ ignore_apts = GetOption("ignore_apts")
 
 
 class SysSetupEnv(Environment):
+
+    def __init__(self, *args, **kw_args):
+        # Initialize a collection of targets to be built
+        self.targets = []
+        super(SysSetupEnv, self).__init__(*args, **kw_args)
+
     def SudoCommand(self, target, source, action, **kw_args):
         alias = kw_args.pop('alias', None)
         def sudo_action(target, source, env):
             print "Calling sudo with the following action:\n", action
             sp.check_output(['sudo', 'sh', '-c', action])
-        tgt = super(SysSetupEnv, self).Command(target, source, sudo_action, **kw_args)
+        tgt = self.Command(target, source, sudo_action, **kw_args)
         if alias:
             Alias(alias, tgt)
         return tgt
+
+    # def something that adds all the targets you've built to a collection and lets you build all but some
+    # broken collection via an alias like scons working
+    def Command(self, target, source, action, **kw_args):
+        tgt = super(SysSetupEnv, self).Command(target, source, action, **kw_args)
+        self.targets.append(tgt)
+        return tgt
+
+    def all_targets(self, except_targets=[]):
+        return [t for t in self.targets if t not in except_targets]
 
 
 
@@ -135,7 +151,7 @@ apt_update = env.Command("touches/apt-update", [ppas, spotify_rep, google_talk_r
 inter_apts = env.SudoCommand("touches/inter_apts", apt_update, "apt-get install gnome-shell")
 # Install and activate silverlight plugin (make sure browser is off)
 silverlight = env.Command("touches/silverlight", apt_update,
-    "killall firefox && killall chromium-desktop && "
+    "- killall firefox && killall chromium-desktop && "
     "sudo apt-get install -y --install-recommends pipelight-multi && "
     "sudo pipelight-plugin --enable silverlight && "
     "date > $TARGET")
@@ -186,13 +202,14 @@ Alias("python", python_pkgs)
 # dotfiles :-)
 # Have to use http unless you upload certs first; pain in ass
 # Add mkdir for ./bin/ in dotfiles; also default build
-dotfiles = env.Command("$HOME/.dotfiles", [rvm, apts],
-    #"git clone git@github.com:metasoarous/dotfiles.git $TARGET && "
-    "git clone https://github.com/metasoarous/dotfiles $TARGET && "
-    "cd $TARGET && "
-    "rake backup && "
-    "mkdir -p $HOME/bin && "
-    "rake install")
+# dotfiles = env.Command("$HOME/.dotfiles", [rvm, apts],
+#     #"git clone git@github.com:metasoarous/dotfiles.git $TARGET && "
+#     "git clone https://github.com/metasoarous/dotfiles $TARGET && "
+#     "cd $TARGET && "
+#     "rake backup && "
+#     "mkdir -p $HOME/bin && "
+#     "rake install")
+dotfiles = []
 Alias("dotfiles", dotfiles)
 
 # Install R packages - need dotfiles first for correct cran
@@ -298,3 +315,10 @@ Alias('all', all_tgts)
 # add vim and firefox spelling and merge all
 
 # Download crashplan - http://download.code42.com/installs/linux/install/CrashPlan/CrashPlan_3.6.3_Linux.tgz
+
+
+Alias("working", env.all_targets(except_targets=[mendeley,
+    gnome_terminal_solarized,
+    epkg]))
+
+
