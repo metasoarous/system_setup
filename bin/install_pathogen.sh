@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 mkdir -p ~/.vim ~/.vim/tmp ~/.vim/autoload ~/.vim/bundle; \
-  curl -Sso ~/.vim/autoload/pathogen.vim \
-  https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
+  curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 
 cd ~/.vim/bundle
 
